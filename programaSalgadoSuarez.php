@@ -315,15 +315,33 @@ function resumenJugador($juegos, $jugador) {
  * @return integer El resultado lexicográfico de la comparación de nombres del jugador 2
  */
 function compararJugadores2($juegoA, $juegoB) {
+    $resultado = 0;
+
+    // Verificamos si hay igualdad entre los nombres
+    if ($juegoA["jugador2"] === $juegoB["jugador2"]) {
+        $resultado = 0;
+    } 
+    // Verificamos si el segundo nombre es menor lexicográficamente al primero
+    else if ($juegoA["jugador2"] < $juegoB["jugador2"]) {
+        $resultado = -1;
+    } 
+    // Sino es igual o menor entonces el primer nombre es lexicográficamente mayor
+    else {
+        $resultado = 1;
+    }
+    
+    return $resultado;
+
     /*
-        strcmp() realiza una comparación binaria segura de cadenas de texto.
+        También se podría haber resuelto con strcmp() que realiza una
+        comparación binaria segura de cadenas de texto.
         La comparación se realiza haciendo diferenciación entre mayúsculas y minúsculas.
         El primer parámetro en recibir es un string "string1" y un segundo y último string "string2".
         Retorna un valor menor a 0 si string1 es menor que string2; un valor
         mayor a 0 si string1 es mayor a string2 y 0 si son iguales.
         https://www.php.net/manual/en/function.strcmp.php
     */
-    return strcmp($juegoA["jugador2"], $juegoB["jugador2"]);
+    // return strcmp($juegoA["jugador2"], $juegoB["jugador2"]);
 }
 
 /**
