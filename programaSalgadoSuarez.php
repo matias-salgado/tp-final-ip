@@ -58,7 +58,7 @@ function pedirNumero($min, $max) {
     $respuesta = (integer)trim(fgets(STDIN));
 
     while ($respuesta < $min || $respuesta > $max) {
-        echo "Valor no válido, ingrese un número entre " . $min . " y " . $max . ": ";
+        echo "\033[31mValor no válido, ingrese un número entre " . $min . " y " . $max . "\033[0m: ";
         $respuesta = (integer)trim(fgets(STDIN));
     }
 
@@ -265,7 +265,9 @@ function porcentajeGanados($juegos, $nroJugador) {
  */
 function resumenJugador($juegos, $jugador) {
     // integer $cantJuegos, $i, $nroJugador, $jugadorOpuesto
+    // boolean $jugadorEncontrado
     // array $resumenJugador, $juego
+    $jugadorEncontrado = false;
     $cantJuegos = count($juegos);
     $resumenJugador = [
         "jugador" => $jugador,
@@ -278,6 +280,7 @@ function resumenJugador($juegos, $jugador) {
     for ($i = 0; $i < $cantJuegos; $i++) {
         $juego = $juegos[$i];
         if ($juego["jugador1"] == $resumenJugador["jugador"] || $juego["jugador2"] == $resumenJugador["jugador"]) {
+            $jugadorEncontrado = true;
             $nroJugador = $juego["jugador1"] == $resumenJugador["jugador"] ? 1 : 2;
             $jugadorOpuesto = obtenerJugadorOpuesto($nroJugador);
 
@@ -295,6 +298,11 @@ function resumenJugador($juegos, $jugador) {
 
             $resumenJugador["aciertos"] += $juego["aciertos" . $nroJugador];
         }
+    }
+
+    if(!$jugadorEncontrado) {
+        echo "\n\033[31mEl jugador " . $jugador . " no ha participado\033[0m\n";
+        return;
     }
 
     echo "\n**************************************\n";
@@ -318,7 +326,7 @@ function compararJugadores2($juegoA, $juegoB) {
     $resultado = 0;
 
     // Verificamos si hay igualdad entre los nombres
-    if ($juegoA["jugador2"] === $juegoB["jugador2"]) {
+    if ($juegoA["jugador2"] == $juegoB["jugador2"]) {
         $resultado = 0;
     } 
     // Verificamos si el segundo nombre es menor lexicográficamente al primero
@@ -486,7 +494,7 @@ do {
             break;
 
         case 3:
-            echo "\nJugadores cargados: " . listarJugadoresCargados($juegos) . "\n";
+            echo "\n\033[33mJugadores cargados: " . listarJugadoresCargados($juegos) . "\033[0m\n";
             echo "Ingrese el nombre del jugador a buscar: ";
             /*
                 strtolower() convierte los caracteres de una cadena de texto en minúscula.
@@ -517,7 +525,7 @@ do {
             break;
         
         case 5:
-            echo "\nJugadores cargados: " . listarJugadoresCargados($juegos) . "\n";
+            echo "\n\033[33mJugadores cargados: " . listarJugadoresCargados($juegos) . "\033[0m\n";
             echo "Ingrese el nombre del jugador a buscar: ";
             /*
                 strtolower() convierte los caracteres de una cadena de texto en minúscula.
@@ -538,11 +546,11 @@ do {
             break;
         
         case 7:
-            echo "\n+------------------------------------+\n";
+            echo "\n\033[34m+------------------------------------+\n";
             echo "|                                    |\n";
             echo "|         ¡Gracias por jugar!        |\n";
             echo "|                                    |\n";
-            echo "+------------------------------------+\n\n";
+            echo "+------------------------------------+\033[0m\n\n";
 
             break;
     }
