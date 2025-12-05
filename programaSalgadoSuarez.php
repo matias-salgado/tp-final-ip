@@ -25,9 +25,10 @@ include_once("memoria.php");
  * Función encargada de cargar los datos iniciales del juego.
  * Declara una secuencia de juegos predefinidos dentro de un arreglo
  * indexado y los retorna.
+ * @param array &$juegos La colección de juegos pasado como referencia
  * @return array El arreglo indexado que contiene los juegos precargados
  */
-function cargarJuegos() {
+function cargarJuegos(&$juegos) {
     // array $juegos
     $juegos = [];
 
@@ -41,8 +42,6 @@ function cargarJuegos() {
     $juegos[7] = ["jugador1" => "Brahian", "aciertos1" => 3, "jugador2" => "Samira", "aciertos2" => 1];
     $juegos[8] = ["jugador1" => "Julian", "aciertos1" => 2, "jugador2" => "Samira", "aciertos2" => 2];
     $juegos[9] = ["jugador1" => "Samira", "aciertos1" => 1, "jugador2" => "Brahian", "aciertos2" => 3];
-
-    return $juegos;
 }
 
 /**
@@ -146,6 +145,15 @@ function agregarJuego($juegos, $juego) {
 }
 
 /**
+ * Función auxiliar optiene el jugador opuesto
+ * a uno pasado por parámetro
+ * @param integer $nroJugador El número del jugador al cuál obtener el opuesto
+ */
+function obtenerJugadorOpuesto($nroJugador) {
+    return $nroJugador == 1 ? 2 : 1;
+}
+
+/**
  * Función se encarga de encontrar el índice del primer
  * juego ganado por un jugador pasado por parámetro
  * @param array $juegos La colección de juegos de donde se hará la búsqueda
@@ -153,7 +161,7 @@ function agregarJuego($juegos, $juego) {
  * @return integer El índice del juego encontrado o -1 si no fue encontrado
  */
 function buscarPrimerGanado($juegos, $jugador) {
-    // integer $indiceencontrado, $cantJuegos, $i
+    // integer $indiceEncontrado, $cantJuegos, $i, $nroJugador, $jugadorOpuesto
     // boolean $encontrado
     // array $juego
     $indiceEncontrado = -1;
@@ -164,13 +172,11 @@ function buscarPrimerGanado($juegos, $jugador) {
     while (!$encontrado && $i < $cantJuegos) {
         $juego = $juegos[$i];
 
-        if ($juego["jugador1"] == $jugador) {
-            if ($juego["aciertos1"] > $juego["aciertos2"]) {
-                $encontrado = true;
-                $indiceEncontrado = $i;
-            }
-        } else if ($juego["jugador2"] == $jugador) {
-            if ($juego["aciertos1"] < $juego["aciertos2"]) {
+        if ($juego["jugador1"] == $jugador || $juego["jugador2"] == $jugador) {
+            $nroJugador = $juego["jugador1"] == $jugador ? 1 : 2;
+            $jugadorOpuesto = obtenerJugadorOpuesto($nroJugador);
+
+            if ($juego["aciertos" . $nroJugador] > $juego["aciertos" . $jugadorOpuesto]) {
                 $encontrado = true;
                 $indiceEncontrado = $i;
             }
@@ -180,15 +186,6 @@ function buscarPrimerGanado($juegos, $jugador) {
     }
 
     return $indiceEncontrado;
-}
-
-/**
- * Función auxiliar optiene el jugador opuesto
- * a uno pasado por parámetro
- * @param integer $nroJugador El número del jugador al cuál obtener el opuesto
- */
-function obtenerJugadorOpuesto($nroJugador) {
-    return $nroJugador == 1 ? 2 : 1;
 }
 
 /**
@@ -372,7 +369,7 @@ function ordenarJuegosPorJugador2($juegos) {
     echo "\n";
 
     /*
-        prrint_r() muestra en pantalla información humana sobre una variable.
+        print_r() muestra en pantalla información humana sobre una variable.
         Recibe por parámetro una expresión que será la que se muestre en pantalla.
         Para objetos y arreglos (como es el uso en este caso), los valores son
         presentados en un formato que muestra las claves/índices y los elementos.
@@ -469,7 +466,7 @@ $juegos = []; // El arreglo donde se cargará la colección de juegos
 
 // Inicialización de variables:
 
-$juegos = cargarJuegos(); // Iniciamos el programa con juegos precargados
+cargarJuegos($juegos); // Iniciamos el programa con juegos precargados
 
 do {
 
